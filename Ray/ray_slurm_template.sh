@@ -36,7 +36,7 @@
 
 ### Memory requested
 #SBATCH --mem=200G
-#SBATCH --chdir=/n/home11/nswood/Mixed_Curvature/
+#SBATCH --chdir=/n/home11/nswood/HPC_Parallel_Computing/
 #SBATCH --output=slurm_monitoring/%x-%j.out
 
 
