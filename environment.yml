@@ -1,4 +1,4 @@
-name: tune_env
+name: hpc_env
 channels:
   - pytorch-nightly
   - nvidia
