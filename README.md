@@ -46,30 +46,19 @@ Navigate to the `Ray` directory and run `sbatch ray_slurm_template.sh`. All modi
 To hyperparameter tune your own model, modify the [`ray_hyp_tune.py`](./Ray/ray_hyp_tune.py) file to incorporate your custom structure.
 
 #### Monitoring Ray Processes
-
+ 
 There are many ways to monitor Ray processes using user interfaces. Ray documentation suggests using [Prometheus](https://prometheus.io/) to scrape data from logs and [Grafana](https://grafana.com/) to display results. However, these methods can be difficult to interface with SLURM, especially on servers that require 2FA for SSH, such as Cannon. 
 
-The solution is to use [TensorBoard](https://www.tensorflow.org/tensorboard)'s UI to track Ray. TensorBoard handles both data scraping using the log directory and displays a UI showing current progress. When the Ray servers are initialized, they will output a TensorBoard command to the SLURM log file such as:
-
+The solution is to use [TensorBoard](https://www.tensorflow.org/tensorboard)'s UI to track Ray. TensorBoard handles both data scraping using the log directory and displays a UI showing current progress. When the Ray servers are initialized, you can track the progress using Tensorboard. From my experimenting, Ray will print out a command with the incorret path:
 
 ```
 To visualize your results with TensorBoard, run: `tensorboard --logdir {Insert path to log file}`
 ```
 
-If you run this command, you will launch a Tensorboard instance. This will send output UI information to a port the server (assumed to be `6007` here). You must port forward this to your local machine using a command such as: 
+All you have to do is insert the path to the output for the Ray instance as the `logdir`. This path should be to a folder `TorchTrainer_{some time/date info}` inside the `storage_path` you supplied in the `RunConfig`.  This will send output UI information to a port the server (assumed to be `6007` here). You must port forward this to your local machine using a command such as: 
 
 ```
 ssh -L 6007:localhost:6007 your-username@your-sever
 ```
 
 You can then access the TensorBoard UI for your Ray process at `https://localhost:6007`.
-
-
-
-
-
-
-
-
-
-
