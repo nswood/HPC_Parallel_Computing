@@ -88,7 +88,7 @@ maxWorkerPort=19999
 
 
 
-ray disable-usage-stats
+# ray disable-usage-stats
 
 echo "Starting HEAD at $head_node"
 srun --nodes=1 --ntasks=1 -w "$head_node" \
@@ -103,7 +103,7 @@ srun --nodes=1 --ntasks=1 -w "$head_node" \
         --redis-password=$redis_password \
         --num-cpus "${SLURM_CPUS_PER_TASK}" \
         --num-gpus "${SLURM_GPUS_PER_TASK}" \
-        --temp-dir="/n/home11/nswood/Mixed_Curvature/log" \
+        --temp-dir="/n/home11/nswood/HPC_Parallel_Computing/log" \
         --block &
 
 sleep 10
@@ -119,6 +119,7 @@ for ((i = 1; i <= worker_num; i++)); do
         --redis-password=$redis_password \
         --num-cpus "${SLURM_CPUS_PER_TASK}" \
         --num-gpus "${SLURM_GPUS_PER_TASK}" \
+        --temp-dir="/n/home11/nswood/HPC_Parallel_Computing/log" \
         --block &
     sleep 5
 done
