@@ -226,10 +226,10 @@ def main(num_samples=10, max_num_epochs=10, smoke_test=False):
     }
     
     
-    from ray.train import ScalingConfig, CheckpointConfig, RunConfig
+    from ray.train import ScalingConfig, CheckpointConfig#, RunConfig
     
     from ray.tune.logger import TBXLoggerCallback
-    
+    import ray 
     tensorboard_callback = TBXLoggerCallback()
     
 
@@ -237,7 +237,7 @@ def main(num_samples=10, max_num_epochs=10, smoke_test=False):
         num_workers=1, use_gpu=True, resources_per_worker={"CPU": args.cpu_per_trial, "GPU": args.gpu_per_trial}
     )
     #
-    run_config = RunConfig(storage_path="/n/home11/nswood/HPC_Parallel_Computing/storage",
+    run_config = ray.air.RunConfig(storage_path="/n/home11/nswood/HPC_Parallel_Computing/storage",
         callbacks=[tensorboard_callback],
         checkpoint_config=CheckpointConfig(
             num_to_keep=2,
