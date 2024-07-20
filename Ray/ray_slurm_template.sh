@@ -103,10 +103,11 @@ srun --nodes=1 --ntasks=1 -w "$head_node" \
         --redis-password=$redis_password \
         --num-cpus "${SLURM_CPUS_PER_TASK}" \
         --num-gpus "${SLURM_GPUS_PER_TASK}" \
-        --temp-dir="/n/home11/nswood/HPC_Parallel_Computing/log" \
         --block &
 
 sleep 10
+
+echo "IP Head: $ip_head"
 
 worker_num=$((SLURM_JOB_NUM_NODES - 1))
 
@@ -119,7 +120,6 @@ for ((i = 1; i <= worker_num; i++)); do
         --redis-password=$redis_password \
         --num-cpus "${SLURM_CPUS_PER_TASK}" \
         --num-gpus "${SLURM_GPUS_PER_TASK}" \
-        --temp-dir="/n/home11/nswood/HPC_Parallel_Computing/log" \
         --block &
     sleep 5
 done
@@ -129,4 +129,3 @@ done
 
 # python -u Ray/simpler-trainer.py "$SLURM_CPUS_PER_TASK"
 python -u Ray/ray_hyp_tune.py --gpu_per_trial 1 --cpu_per_trial 2
-

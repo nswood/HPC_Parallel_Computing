@@ -242,7 +242,7 @@ def main(num_samples=10, max_num_epochs=10, smoke_test=False):
         checkpoint_config=CheckpointConfig(
             num_to_keep=2,
             checkpoint_score_attribute="loss",
-            checkpoint_score_order="max",
+            checkpoint_score_order="min",
             
         ),
     )
@@ -259,16 +259,33 @@ def main(num_samples=10, max_num_epochs=10, smoke_test=False):
     scheduler = ASHAScheduler(
         max_t=max_num_epochs,
         grace_period=1,
-        reduction_factor=2)
+        reduction_factor=2,
+        metric="loss",
+        mode="min")
+    
+    
+    test_config = {
+    "l1": 4,
+    "l2": 4,
+    "lr": 0.1,
+    "batch_size": 16,
+    }
+
+    from ray.tune.search.hyperopt import HyperOptSearch
+
+    hyperopt_search = HyperOptSearch(
+            metric="loss",
+            mode="min",
+            points_to_evaluate = [{"train_loop_config": test_config}]
+            )
     
     tuner = tune.Tuner(
         ray_trainer,
         param_space={"train_loop_config": config},
         tune_config=tune.TuneConfig(
-            metric="loss",
-            mode="max",
-            num_samples=num_samples,
-            scheduler=scheduler
+            search_alg = hyperopt_search,
+            num_samples = num_samples,
+            scheduler = scheduler,
             
         ),
     )
