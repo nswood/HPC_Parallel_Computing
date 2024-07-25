@@ -62,6 +62,9 @@ source /n/holystore01/LABS/iaifi_lab/Users/nswood/mambaforge/etc/profile.d/conda
 
 conda activate tune_env
 
+# conda activate top_env
+
+
 if [[ "$head_node_ip" == *" "* ]]; then
   IFS=' ' read -ra ADDR <<<"$head_node_ip"
   if [[ ${#ADDR[0]} -gt 16 ]]; then
@@ -72,18 +75,18 @@ if [[ "$head_node_ip" == *" "* ]]; then
   echo "IPV6 address detected. We split the IPV4 address as $head_node_ip"
 fi
 
-port=6379
+port=6322
 ip_head=$head_node_ip:$port
 export ip_head
 echo "IP Head: $ip_head"
 redis_password=$(uuidgen)
 echo "redis_password: "$redis_password
 
-nodeManagerPort=6700
-objectManagerPort=6701
-rayClientServerPort=10001
-redisShardPorts=6702
-minWorkerPort=10002
+nodeManagerPort=6600
+objectManagerPort=6601
+rayClientServerPort=11001
+redisShardPorts=6602
+minWorkerPort=11002
 maxWorkerPort=19999
 
 
@@ -103,6 +106,7 @@ srun --nodes=1 --ntasks=1 -w "$head_node" \
         --redis-password=$redis_password \
         --num-cpus "${SLURM_CPUS_PER_TASK}" \
         --num-gpus "${SLURM_GPUS_PER_TASK}" \
+        --temp-dir="/n/home11/nswood/HPC_Parallel_Computing/log" \
         --block &
 
 sleep 10
@@ -128,4 +132,5 @@ done
 
 
 # python -u Ray/simpler-trainer.py "$SLURM_CPUS_PER_TASK"
-python -u Ray/ray_hyp_tune.py --gpu_per_trial 1 --cpu_per_trial 2
+# python -u Ray/ray_hyp_tune.py --gpu_per_trial 1 --cpu_per_trial 2
+python -u Ray/pytorch_lightning_ray.py --gpu_per_trial 1 --cpu_per_trial 2
